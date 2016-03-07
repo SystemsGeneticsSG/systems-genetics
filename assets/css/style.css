@@ -227,6 +227,48 @@ input {
 	font-size: 40px;
 }
 
+/* image */
+/* HEADER SECTION */
+#h_pers {
+	padding-top: 20px;
+	text-align:center;
+	background-attachment: relative;
+	background-position: center center;
+	width: 100%;
+	color: black;
+	
+
+}
+
+#h_pers .logo {
+	top: 30px;
+	left: 45px;
+	font-size: 18px;
+	font-weight: 900;
+	position:absolute; 
+}
+
+#h_pers .social {
+	top: 30px;
+	right: 45px;
+	font-size: 20px;
+	position: absolute;
+}
+
+#h_pers .social i {
+	margin-left: 20px;
+}
+
+#h_pers .social a {
+	color: black;
+}
+
+#h_pers h1 {
+	font-weight: 700;
+	color: black;
+	font-size: 40px;
+}
+
 /* Store Links */
 .store img {
 	margin-right: 10px;
@@ -307,6 +349,13 @@ ul {
 }
 
 /* SPONSORS */
+#references {
+	padding-top: 90px;
+	padding-bottom: 60px;
+	color: #D3D3D3;
+}
+
+/* SPONSORS */
 #g {
 	background: #f2f2f2;
 	padding-top: 60px;
@@ -337,6 +386,14 @@ ul {
 #green tgr {
 	font-weight: 700;
 	letter-spacing: 1px;
+}
+
+#green a {
+	color: "white";
+}
+
+#f a:hover {
+	color: "grey";
 }
 
 /* FOOTER */
