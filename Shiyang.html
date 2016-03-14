@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-67015622-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="assets/img/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <title>Shiyang Liu - Systems Genentics Singapore</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="assets/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="assets/css/ionicons.min.css" rel="stylesheet">
+    <link href="assets/css/style.css" rel="stylesheet">
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div id="h_pers">
+      <a href="index.html"><div class="logo">Systems Genetics Singapore</div></a>
+      <div class="social hidden-xs">
+        <a href="https://twitter.com/shiyangliu"><i class="ion-social-twitter"></i></a>
+      </div>
+    </div><!-- /H -->
+
+    <div class="container ptb">
+      <div class="row" name="whatwedo" id="whatwedo">
+        <div class="col-md-3">
+          <img src="assets/img/Shiyang.jpg" width=100% class="mt img-responsive img-rounded" alt="our plan">
+        </div>
+        <div class="col-md-9">
+          <h2>Shiyang Liu</h2>
+          <p class="mt"> Fascinated by the complicated biology of cancer and substantial amount of information we could generate to study it in the era of “Big Data”, I’m interested to apply computational method to study cancer in a system approach. In the long run, I hope a better understanding of cancer biology could be applied into clinical settings to improve the patient care. </p>
+          <p class="mt"> My research project is on Wnt-driven lncRNA in pancreatic cancer.
+          </p>
+          <hr>
+        </div>
+        
+
+        </div>
+    </div><!--/container-->
+
+          </div>
+          <div class="col-md-9  ">
+          <h2>Bibliography</h2>
+          <div name="papers" id="papers">
+            Retreiving papers from PubMed.
+
+          </div>
+          <script>
+var HTMLpublication = '<div class="references"><b>%title%</b> %authors%. <i>%journal%</i>,%volume%%issue%%pages%%date% <a href="%data%" target="_blank"> [pubmed] </a><hr></hr></div>'
+//create a template for your reference formatting
+
+var publications, idStringList;
+var pubmedSearchAPI = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?';
+var pubmedSummaryAPI = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?';   
+var database = 'db=pubmed&'    
+var returnmode = '&retmode=json'; 
+var returnmax = '&retmax=100';
+var searchterm = '&term=liu,shiyang[author]';
+var returntype = '&rettype=abstract';
+
+var idURL = pubmedSearchAPI + database + returnmode + returnmax + searchterm
+console.log(idURL);
+
+var getPubmed = function(url) {//passed url
+        return new Promise(function(resolve, reject) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('get', url, true);
+            xhr.responseType = 'json';
+            xhr.onload = function() {
+                var status = xhr.status;
+                if (status == 200) {//status 200 signifies OK (http://www.w3schools.com/ajax/ajax_xmlhttprequest_onreadystatechange.asp)
+                    resolve(xhr.response);
+                
+} else {
+                    reject(status);
+                
+}
+            
+};
+            xhr.send();
+        
+});
+    
+};
+
+getPubmed(idURL).then(function(data) {
+        var idList = data.esearchresult.idlist;
+        idStringList = idList.toString(); //converts the idlist to a string to be appended to the search url
+        idStringList = '&id=' + idStringList;
+        summaryURL = pubmedSummaryAPI + database + returnmode + returntype + idStringList;
+        getPubmed(summaryURL).then(function(summary) {
+            publications = formatReferences(summary);
+            console.log(publications); //print your publications in the console window
+            $(papers).html('');
+            $(papers).append(publications);
+
+}, function(status) {
+            publications = 'Something went wrong getting the ids.';
+        
+});
+        
+}, function(status) {
+            publications = 'Something went wrong getting the ids.';
+        
+}
+    );
+
+function formatReferences(summary) {
+    var publicationList ='';
+    for(refs in summary.result) {
+            if(refs !== 'uids') {
+                var authors = '';
+                var publication = '';
+                var authorCount = ((summary.result[refs].authors).length);
+                var i=0;
+                while (i<authorCount-1) {
+                    authors += summary.result[refs].authors[i].name + ', ';
+                    i++;
+                
+}
+
+            publication = HTMLpublication.replace('%data%','http://www.ncbi.nlm.nih.gov/pubmed/'+refs)
+                authors += summary.result[refs].lastauthor;
+                publication = publication.replace('%authors%',authors);
+                publication = publication.replace('%title%',summary.result[refs].title);
+                publication = publication.replace('%journal%',summary.result[refs].source);
+                //Alter formatting if article is In Press
+                if(summary.result[refs].volume!=='') {
+                    publication = publication.replace('%volume%',' ' + summary.result[refs].volume);
+                    publication = publication.replace('%issue%','(' + summary.result[refs].issue + ')');
+                    publication = publication.replace('%pages%',': ' + summary.result[refs].pages +', ');
+                    var date = summary.result[refs].pubdate.slice(0,4);
+                    publication = publication.replace('%date%',date + '.');
+                
+}
+                else {
+                    publication = publication.replace('%volume%',' In Press');
+                    publication = publication.replace('%issue%','.');
+                    publication = publication.replace('%pages%','');
+                    publication = publication.replace('%date%','');
+                
+}
+                publicationList = publication + publicationList;
+            
+}
+        
+}
+    return(publicationList);
+
+}
+</script>
+
+          </div>
+        </div><!--/row-->
+      </div><!--/container-->
+    </div><!--/green-->
+
+    <div id="f">
+      <div class="container">
+        <div class="row centered">
+          <p class="mt">
+          Centre for Computational Biology, 8 College Road, Singapore, 169857
+          </p>
+          <h6 class="mt"></h6>
+        </div><!--/row-->
+      </div><!--/container-->
+    </div><!--/F-->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/retina-1.1.0.js"></script>
+  </body>
+</html>
